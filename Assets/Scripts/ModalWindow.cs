@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,45 +10,74 @@ public class ModalWindow : MonoBehaviour
 {
     [Header("Header")]
     [SerializeField] private Transform _headerArea;
-    [SerializeField] private TextMeshProUGUI _titleField;
+    [SerializeField] private TextMeshProUGUI _titleText;
 
     [Header("Content")]
     [SerializeField] private Transform _contentArea;
     [SerializeField] private Image _eventImage;
     [SerializeField] private TextMeshProUGUI _eventText;
 
+    [Header("Input")]
+    [SerializeField] private Transform _inputArea;
+    [SerializeField] private TextMeshProUGUI _inputText;
+
     [Header("Footer")]
     [SerializeField] private Transform _footerArea;
-    [SerializeField] private Button _Button1;
-    [SerializeField] private Button _Button2;
+    [SerializeField] private Button _button1;
+    [SerializeField] private Button _button2;
+    [SerializeField] private Button _button3;
+    [SerializeField] private TextMeshProUGUI _button1Text;
+    [SerializeField] private TextMeshProUGUI _button2Text;
+    [SerializeField] private TextMeshProUGUI _button3Text;
 
-    private UnityAction button1Action;
-    private UnityAction button2Action;
+    private Action onButton1Callback;
+    private Action onButton2Callback;
+    private Action onButton3Callback;
 
-    public void Action1()
+    public void button1Action()
     {
-        button1Action?.Invoke();
+        onButton1Callback?.Invoke();
         //Close();
     }
-    public void Action2()
+    public void button2Action()
     {
-        button2Action?.Invoke();
+        onButton2Callback?.Invoke();
+        //Close();
+    }
+    public void button3Action()
+    {
+        onButton3Callback?.Invoke();
         //Close();
     }
 
-    public void ShowModalMessage(string title, Sprite image, string message, UnityAction button1Action, UnityAction button2Action = null)
+    public void StoryEvent(string title, Sprite image, string message, string button1message, Action button1action, string button2message = null, Action button2action = null, string button3message = null, Action button3action = null, string input = null)
     {
-        // Hide header if there's no title
+        // Title
         bool hasTitle = string.IsNullOrEmpty(title);
-        _headerArea.gameObject.SetActive(hasTitle);
+        _headerArea.gameObject.SetActive(!hasTitle);
+        _titleText.text = title;
 
+        // Input box
+        bool hasInput = string.IsNullOrEmpty(input);
+        _inputArea.gameObject.SetActive(!hasInput);
+        _inputText.text = input;
+
+        // Content
         _eventImage.sprite = image;
         _eventText.text = message;
 
-        // onAction1Callback = button1Action;
+        // Buttons
+        onButton1Callback = button1Action;
+        _button1Text.text = button1message;
 
-        bool hasButon2 = (button2Action != null);
-        _Button2.gameObject.SetActive(hasButon2);
-        // onAction2Callback = button2Action;
+        bool hasButton2 = (button2action != null);
+        _button2.gameObject.SetActive(hasButton2);
+        _button2Text.text = button2message;
+        onButton2Callback = button2Action;
+
+        bool hasButton3 = (button3action != null);
+        _button3.gameObject.SetActive(hasButton3);
+        _button3Text.text = button3message;
+        onButton3Callback = button3Action;
     }
 }

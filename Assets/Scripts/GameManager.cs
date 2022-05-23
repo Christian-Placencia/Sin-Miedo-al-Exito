@@ -29,8 +29,10 @@ public class GameManager : MonoBehaviour
 
     // Inspector fields for story interface.
     [SerializeField] private TMP_Text headerText;
+    [SerializeField] private Image image;
     [SerializeField] private TMP_Text button1Text;
     [SerializeField] private TMP_Text button2Text;
+    [SerializeField] private TMP_Text button3Text;
 
     // Bool for fail states.
     public bool isInDebt;

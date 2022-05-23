@@ -17,7 +17,7 @@ public class WindowTrigger : MonoBehaviour
         // if (onbutton1Action.GetPErsistentEventCount() > 0 )
 
 
-        UIController.instance.modalWindow.ShowModalMessage(title, image, message, null, null);
+        //UIController.instance.modalWindow.ShowModalMessage(title, image, message, null, null);
     }
 
     public UnityEvent onAction1Callback;
