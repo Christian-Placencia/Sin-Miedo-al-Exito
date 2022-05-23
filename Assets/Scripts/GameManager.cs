@@ -28,11 +28,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TMP_Text statusText;
 
     // Inspector fields for story interface.
-    [SerializeField] private TMP_Text headerText;
-    [SerializeField] private Image image;
-    [SerializeField] private TMP_Text button1Text;
-    [SerializeField] private TMP_Text button2Text;
-    [SerializeField] private TMP_Text button3Text;
+    //[SerializeField] private TMP_Text headerText;
+    //[SerializeField] private Image image;
+    //[SerializeField] private TMP_Text button1Text;
+    //[SerializeField] private TMP_Text button2Text;
+    //[SerializeField] private TMP_Text button3Text;
 
     // Bool for fail states.
     public bool isInDebt;
@@ -47,8 +47,10 @@ public class GameManager : MonoBehaviour
     public float pendingCredit;
     public float dueCredit;
     public float minCredit;
-    public string creditHistory;
-    public string status;
+    public float credit;
+    public int status;
+
+    private float input;
 
     // Creates a singleton GameManager instance and its getter.
     private static GameManager instance;
@@ -65,11 +67,11 @@ public class GameManager : MonoBehaviour
             Destroy(instance);
 
         // Stat Initialization
-        InitializeStats();
+        //InitializeStats();
         UpdateStats();
 
         // Game Panel Initialization
-        ClearStoryPanel();
+        // ClearStoryPanel();
     }
 
     // Update is called every frame.
@@ -78,6 +80,12 @@ public class GameManager : MonoBehaviour
         // Restarts the game when (1) the Left Mouse Button is clicked and (2) the game is over.
         // if (Input.GetMouseButtonDown(0) && isGameOver)
         //    RestartGame();
+    }
+
+    public void ReadStringInput(string box_input)
+    {
+        input = float.Parse(box_input);
+        Debug.Log(input.ToString());
     }
 
     // GameOver displays the Game Over text and allows the player to restart.
@@ -95,19 +103,19 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
-    private void InitializeStats()
-    {
-        savings = 0;
-        salary = 100;
-        investment = 0;
-        expenses = 50;
-        maxCredit = 500;
-        pendingCredit = 0;
-        dueCredit = 0;
-        minCredit = 0;
-        creditHistory = "Bueno";
-        status = "Bajo";
-    }
+    //private void InitializeStats()
+    //{
+    //    savings = 0;
+    //    salary = 100;
+    //    investment = 0;
+    //    expenses = 50;
+    //    maxCredit = 500;
+    //    pendingCredit = 0;
+    //    dueCredit = 0;
+    //    minCredit = 0;
+    //    creditHistory = 0;
+    //    status = 1;
+    //}
 
     private void UpdateStats()
     {
@@ -119,97 +127,162 @@ public class GameManager : MonoBehaviour
         pendingCreditText.text = "$" + pendingCredit.ToString();
         dueCreditText.text = "$" + dueCredit.ToString();
         minCreditText.text = "$" + minCredit.ToString();
-        creditHistoryText.text = creditHistory;
-        statusText.text = status;
+        creditHistoryText.text = credit.ToString();
+        statusText.text = status.ToString();
     }
 
-    // ChangeStat adds to a stat by a certain amount and displays the new value.
-    public void ChangeStat(string stat, float amount = 0, string new_tag = "Bueno")
+    public void SetSalary(float amount = 0)
     {
-        switch(stat)
+        salary = amount;
+        salaryText.text = "$" + salary.ToString();
+    }
+
+    // SAVINGS
+    public void Pay(float amount)
+    {
+        if (amount > savings)
         {
-            case "savings":
-                savings += amount;
-                savingsText.text = "$" + savings.ToString();
-                break;
-
-            case "salary":
-                salary += amount;
-                salaryText.text = "$" + salary.ToString();
-                break;
-
-            case "investment":
-                investment += amount;
-                investmentText.text = "$" + investment.ToString();
-                break;
-
-            case "expenses":
-                expenses += amount;
-                expensesText.text = "$" + expenses.ToString();
-                break;
-
-            case "maxCredit":
-                maxCredit += amount;
-                maxCreditText.text = "$" + maxCredit.ToString();
-                break;
-
-            case "pendingCredit":
-                pendingCredit += amount;
-                pendingCreditText.text = "$" + pendingCredit.ToString();
-                break;
-
-            case "dueCredit":
-                dueCredit += amount;
-                dueCreditText.text = "$" + dueCredit.ToString();
-                break;
-
-            case "minCredit":
-                minCredit += amount;
-                minCreditText.text = "$" + minCredit.ToString();
-                break;
-
-            case "creditHistory":
-                creditHistory = new_tag;
-                creditHistoryText.text = creditHistory;
-                break;
-
-            case "status":
-                status = new_tag;
-                statusText.text = status;
-                break;
-
-            default:
-                Debug.Log(stat + " not recognized.");
-                break;
+            if (amount - savings > investment)
+            {
+                AddToCredit(amount - savings - investment);
+                SetSavings(0);
+                SetInvestment(0);
+            }
+            else
+            {
+                AddToInvestment(-(amount - savings));
+                SetSavings(0);
+            }
         }
-    }
-    public void ChangeHeader(string text)
-    {
-        headerText.text = text;
-    }
-
-    public void ChangeButton(int button, string text)
-    {
-        switch (button)
+        else
         {
-            case 1:
-                button1Text.text = text;
-                break;
-
-            case 2:
-                button2Text.text = text;
-                break;
-
-            default:
-                Debug.Log(button.ToString() + " not recognized.");
-                break;
+            AddToSavings(-amount);
         }
     }
 
-    public void ClearStoryPanel()
+    public void AddToSavings(float amount)
     {
-        headerText.text = "";
-        button1Text.text = "";
-        button2Text.text = "";
+        savings += amount;
+        savingsText.text = "$" + savings.ToString();
+    }
+    public void SetSavings(float amount)
+    {
+        savings = amount;
+        savingsText.text = "$" + savings.ToString();
+    }
+
+    // INVESTMENT
+    public void AddToInvestment(float amount)
+    {
+        investment += amount;
+        investmentText.text = "$" + investment.ToString();
+    }
+    public void SetInvestment(float amount)
+    {
+        investment = amount;
+        investmentText.text = "$" + investment.ToString();
+    }
+    public void InvestmentLow()
+    {
+        Pay(input);
+        AddToInvestment(input * 1.06f);
+    }
+    public void InvestmentMed()
+    {
+        Pay(input);
+        AddToInvestment(input * 1.12f);
+    }
+    public void InvestmentHigh()
+    {
+        Pay(input);
+        AddToInvestment(input * 1.18f);
+    }
+
+    // MONTHLY EXPENSES
+    public void PayExpenses()
+    {
+        Pay(expenses);
+    }
+    public void AddToExpenses(float amount)
+    {
+        expenses += amount;
+        expensesText.text = "$" + expenses.ToString();
+    }
+
+    // CREDIT
+    public void AddToCredit(float amount = 0)
+    {
+        credit += amount;
+        creditHistoryText.text = "$" + credit.ToString();
+    }
+
+    public void SetCredit(float amount = 0)
+    {
+        credit = amount;
+        creditHistoryText.text = "$" + credit.ToString();
+    }
+    public void CutoffDate()
+    {
+        AddToDueCredit(credit);
+        credit = 0;
+        creditHistoryText.text = "$" + credit.ToString();
+
+        minCredit = (pendingCredit + dueCredit) * 0.10f;
+        minCreditText.text = "$" + minCredit.ToString();
+    }
+    public void AddToDueCredit(float amount = 0)
+    {
+        dueCredit += amount;
+        dueCreditText.text = "$" + dueCredit.ToString();
+    }
+    public void SetDueCredit(float amount = 0)
+    {
+        dueCredit = amount;
+        dueCreditText.text = "$" + dueCredit.ToString();
+    }
+    public void AddToPendingCredit(float amount = 0)
+    {
+        pendingCredit += amount;
+        pendingCreditText.text = "$" + pendingCredit.ToString();
+    }
+    public void PayCredit()
+    {
+        Pay(input);
+        if(input > dueCredit)
+        {
+            AddToPendingCredit(-(input - dueCredit));
+            SetDueCredit(0);
+        }
+        else
+        {
+            AddToDueCredit(-input);
+        }
+        if (input < minCredit)
+        {
+            AddToStatus(-1);
+        }
+        AddToPendingCredit(dueCredit);
+        SetDueCredit(0);
+        SetMinCredit(0);
+    }
+
+    public void AddToMaxCredit(float amount = 0)
+    {
+        maxCredit += amount;
+        maxCreditText.text = "$" + maxCredit.ToString();
+    }
+
+    // OTHER FUNCTIONS
+    public void SetMinCredit(float amount = 0)
+    {
+        minCredit += amount;
+        minCreditText.text = "$" + minCredit.ToString();
+    }
+
+
+    public void AddToStatus(int amount = 0)
+    {
+        status += amount;
+        statusText.text = status.ToString();
     }
 }

@@ -11,8 +11,8 @@ public class StoryEvent : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        GameManager.Instance.ChangeHeader(message);
-        GameManager.Instance.ChangeButton(1, option1);
-        GameManager.Instance.ChangeButton(2, option2);
+        //GameManager.Instance.ChangeHeader(message);
+        //GameManager.Instance.ChangeButton(1, option1);
+        //GameManager.Instance.ChangeButton(2, option2);
     }
 }

@@ -18,5 +18,7 @@ public class UIController : MonoBehaviour
             instance = this;
         else
             Destroy(instance);
+
+        //instance.storyWindow.StoryEvent("UI Controller Test", null, "The UI Controller Works", "Okay", null, "Cancel", null, "Revise", null, "Input also works");
     }
 }
