@@ -80,6 +80,10 @@ public class GameManager : MonoBehaviour
         // Restarts the game when (1) the Left Mouse Button is clicked and (2) the game is over.
         // if (Input.GetMouseButtonDown(0) && isGameOver)
         //    RestartGame();
+        if (pendingCredit > 30000)
+        {
+            LoadScene("BadEnding");
+        }
     }
 
     public void ReadStringInput(string box_input)
@@ -93,7 +97,7 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         isGameOver = true;
-        // gameOverText.SetActive(true);
+        //gameOverText.SetActive(true);
     }
 
     // RestartGame resets the scene and allows the game to start anew.
@@ -101,6 +105,13 @@ public class GameManager : MonoBehaviour
     {
         // Reloads the active scene.
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    // RestartGame resets the scene and allows the game to start anew.
+    public void LoadScene(string scene)
+    {
+        // Reloads the active scene.
+        SceneManager.LoadScene(scene);
     }
 
     //private void InitializeStats()
@@ -264,6 +275,11 @@ public class GameManager : MonoBehaviour
         AddToPendingCredit(dueCredit);
         SetDueCredit(0);
         SetMinCredit(0);
+    }
+    public void ApplyInterest()
+    {
+        pendingCredit *= 1.2f;
+        pendingCreditText.text = "$" + pendingCredit.ToString();
     }
 
     public void AddToMaxCredit(float amount = 0)
